@@ -75,11 +75,14 @@ class _MainAppState extends State<MainApp> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Image.network(
-                          "$serverURL/api/${product["image"][0]}",
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.cover,
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(5.0),
+                          child: Image.network(
+                            "$serverURL/api/${product["image"][0]}",
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                         SizedBox(
                           width: 10,

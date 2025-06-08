@@ -64,10 +64,12 @@ class _DetailsState extends State<Details> {
                             return Container(
                               width: MediaQuery.of(context).size.width,
                               margin: EdgeInsets.symmetric(horizontal: 5.0),
-                              decoration: BoxDecoration(color: Colors.amber),
-                              child: Image.network(
-                                "$serverURL/api/$i",
-                                fit: BoxFit.cover,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10.0),
+                                child: Image.network(
+                                  "$serverURL/api/$i",
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             );
                           },
