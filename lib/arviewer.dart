@@ -24,8 +24,7 @@ class ArViewerState extends State<ArViewer> {
   ARObjectManager? arObjectManager;
   ARAnchorManager? arAnchorManager;
 
-  ARNode? webObjectNode;
-
+  List<ARNode> nodes = [];
   List<ARAnchor> anchors = [];
   bool placed = false;
 
@@ -77,8 +76,6 @@ class ArViewerState extends State<ArViewer> {
         );
     this.arObjectManager!.onInitialize();
 
-    onWebObjectAtOriginButtonPressed();
-
     this.arSessionManager!.onPlaneOrPointTap = onPlaneOrPointTapped;
   }
 
@@ -86,16 +83,16 @@ class ArViewerState extends State<ArViewer> {
     for (var anchor in anchors) {
       arAnchorManager!.removeAnchor(anchor);
       anchors = [];
+      nodes = [];
       placed = false;
     }
   }
 
   Future<void> onPlaneOrPointTapped(
       List<ARHitTestResult> hitTestResults) async {
-    if (webObjectNode == null) {
+    if (nodes.isNotEmpty || anchors.isNotEmpty) {
       return;
     }
-    placed = true;
     var singleHitTestResult = hitTestResults.firstWhere(
         (hitTestResult) => hitTestResult.type == ARHitTestResultType.plane);
     var newAnchor =
@@ -103,29 +100,21 @@ class ArViewerState extends State<ArViewer> {
     bool? didAddAnchor = await arAnchorManager!.addAnchor(newAnchor);
     if (didAddAnchor!) {
       anchors.add(newAnchor);
-      bool? didAddNodeToAnchor = await arObjectManager!
-          .addNode(webObjectNode!, planeAnchor: newAnchor);
-      if (!didAddNodeToAnchor!) {
-        arSessionManager!.onError("Adding Node to Anchor failed");
-      }
-    } else {
-      arSessionManager!.onError("Adding Anchor failed");
-    }
-  }
-
-  Future<void> onWebObjectAtOriginButtonPressed() async {
-    if (webObjectNode != null) {
-      arObjectManager!.removeNode(webObjectNode!);
-      webObjectNode = null;
-    } else {
       var newNode = ARNode(
           type: NodeType.webGLB,
           uri: widget.modelUrl,
           scale: Vector3(0.2, 0.2, 0.2),
-          position: Vector3(0.0, -0.5, -1.0),
+          position: Vector3(0.0, 0.0, 0.0),
           rotation: Vector4(1.0, 0.0, 0.0, 0.0));
-      bool? didAddWebNode = await arObjectManager!.addNode(newNode);
-      webObjectNode = (didAddWebNode!) ? newNode : null;
+      bool? didAddNodeToAnchor =
+          await arObjectManager!.addNode(newNode, planeAnchor: newAnchor);
+      if (didAddNodeToAnchor!) {
+        nodes.add(newNode);
+      } else {
+        arSessionManager!.onError("Adding Node to Anchor failed");
+      }
+    } else {
+      arSessionManager!.onError("Adding Anchor failed");
     }
   }
 }

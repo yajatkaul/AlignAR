@@ -44,7 +44,13 @@ class _DetailsState extends State<Details> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Product Page"),
+        title: Text(
+          "Product Page",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+          ),
+        ),
       ),
       body: product.isEmpty
           ? Center(
@@ -56,7 +62,7 @@ class _DetailsState extends State<Details> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CarouselSlider(
-                  options: CarouselOptions(height: 200.0),
+                  options: CarouselOptions(height: 300.0),
                   items: (product["image"] as List<dynamic>?)
                       ?.map((i) {
                         return Builder(
@@ -82,7 +88,10 @@ class _DetailsState extends State<Details> {
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   child: Text(
                     product["name"],
-                    style: TextStyle(fontSize: 24),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 34,
+                    ),
                   ),
                 ),
                 const Spacer(),
