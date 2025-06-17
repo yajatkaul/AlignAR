@@ -40,22 +40,10 @@ class ArViewerState extends State<ArViewer> {
         appBar: AppBar(
           title: const Text('ArView'),
         ),
-        body: Stack(children: [
-          ARView(
-            onARViewCreated: onARViewCreated,
-            planeDetectionConfig: PlaneDetectionConfig.horizontalAndVertical,
-          ),
-          Align(
-            alignment: FractionalOffset.bottomCenter,
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                      onPressed: onRemoveEverything,
-                      child: Text("Remove Everything")),
-                ]),
-          )
-        ]));
+        body: ARView(
+          onARViewCreated: onARViewCreated,
+          planeDetectionConfig: PlaneDetectionConfig.horizontalAndVertical,
+        ));
   }
 
   void onARViewCreated(
@@ -77,15 +65,6 @@ class ArViewerState extends State<ArViewer> {
     this.arObjectManager!.onInitialize();
 
     this.arSessionManager!.onPlaneOrPointTap = onPlaneOrPointTapped;
-  }
-
-  Future<void> onRemoveEverything() async {
-    for (var anchor in anchors) {
-      arAnchorManager!.removeAnchor(anchor);
-      anchors = [];
-      nodes = [];
-      placed = false;
-    }
   }
 
   Future<void> onPlaneOrPointTapped(
